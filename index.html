@@ -1,1 +1,162 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>小游戏网站</title>
+    <style>
+      canvas {
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>欢迎来到小游戏网站</h1>
+    <p>请选择您想玩的游戏：</p>
+    <ul>
+      <li><a href="game1.html">游戏一</a></li>
+      <li><a href="game2.html">游戏二</a></li>
+      <li><a href="game3.html">游戏三</a></li>
+    </ul>
+    <script>
+      // 定义场景
+      var canvas = document.createElement('canvas');
+      var ctx = canvas.getContext('2d');
+      canvas.width = 800;
+      canvas.height = 600;
+      document.body.appendChild(canvas);
 
+      // 定义角色
+      var player = {
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        radius: 20,
+        color: 'blue',
+        speed: 5,
+        moveUp: false,
+        moveDown: false,
+        moveLeft: false,
+        moveRight: false,
+        draw: function() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+          ctx.fillStyle = this.color;
+          ctx.fill();
+          ctx.closePath();
+        },
+        update: function() {
+          if (this.moveUp) {
+            this.y -= this.speed;
+          }
+          if (this.moveDown) {
+            this.y += this.speed;
+          }
+          if (this.moveLeft) {
+            this.x -= this.speed;
+          }
+          if (this.moveRight) {
+            this.x += this.speed;
+          }
+        }
+      };
+
+      // 定义碰撞检测函数
+      function checkCollision(obj1, obj2) {
+        var distance = Math.sqrt(
+          (obj1.x - obj2.x) * (obj1.x - obj2.x) + (obj1.y - obj2.y) * (obj1.y - obj2.y)
+        );
+        if (distance < obj1.radius + obj2.radius) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+
+      // 定义游戏循环
+      function gameLoop() {
+        // 清空画布
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // 更新角色位置
+        player.update();
+
+        // 绘制角色
+        player.draw();
+
+        // 检测碰撞
+        if (checkCollision(player, enemy)) {
+          console.log('碰撞了！');
+        }
+
+        // 更新敌人位置
+        enemy.update();
+
+        // 绘制敌人
+        enemy.draw();
+
+        // 循环调用游戏循环函数
+        requestAnimationFrame(gameLoop);
+      }
+
+      // 开始游戏循环
+      gameLoop();
+
+      // 监听键盘事件
+      document.addEventListener('keydown', function(event) {
+        if (event.keyCode === 38) {
+          player.moveUp = true;
+        }
+        if (event.keyCode === 40) {
+          player.moveDown = true;
+        }
+        if (event.keyCode === 37) {
+          player.moveLeft = true;
+        }
+        if (event.keyCode === 39) {
+          player.moveRight = true;
+        }
+      });
+
+      document.addEventListener('keyup', function(event) {
+        if (event.keyCode === 38) {
+          player.moveUp = false;
+        }
+        if (event.keyCode === 40) {
+          player.moveDown = false;
+        }
+        if (event.keyCode === 37) {
+          player.moveLeft = false;
+        }
+        if (event.keyCode === 39) {
+          player.moveRight = false;
+        }
+      });
+
+      // 定义敌人角色
+      var enemy = {
+        x: 100,
+        y: 100,
+        radius: 20,
+        color: 'red',
+        speed: 3,
+        draw: function() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+          ctx.fillStyle = this.color;
+          ctx.fill();
+          ctx.closePath();
+        },
+        update: function() {
+          if (this.x < player.x) {
+            this.x += this.speed;
+          } else {
+            this.x -= this.speed;
+          }
+          if (this.y < player.y) {
+            this.y += this.speed;
+          } else {
+            this.y -= this.speed;
+          }
+        }
+      };
+    </script>
+  </body>
+</html>
